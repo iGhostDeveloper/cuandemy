@@ -1,0 +1,221 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+
+// Get latest 3 blog posts
+const allPosts = await getCollection('blog');
+const latestPosts = allPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+// Function to get category color
+function getCategoryColor(category: string) {
+  const colors = {
+    'Teknologi': 'bg-blue-100 text-blue-800',
+    'Programming': 'bg-green-100 text-green-800',
+    'Design': 'bg-gray-100 text-gray-800',
+    'Tutorial': 'bg-yellow-100 text-yellow-800'
+  };
+  return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+}
+
+// Function to get category gradient
+function getCategoryGradient(category: string) {
+  const gradients = {
+    'Teknologi': 'from-blue-400 to-blue-600',
+    'Programming': 'from-green-400 to-green-600',
+    'Design': 'from-slate-400 to-slate-600',
+    'Tutorial': 'from-yellow-400 to-orange-500'
+  };
+  return gradients[category as keyof typeof gradients] || 'from-gray-400 to-gray-600';
+}
+
+// Function to get category icon
+function getCategoryIcon(category: string) {
+  const icons = {
+    'Teknologi': 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
+    'Programming': 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+    'Design': 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z',
+    'Tutorial': 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'
+  };
+  return icons[category as keyof typeof icons] || icons.Tutorial;
+}
+
+// Format date
+function formatDate(date: Date) {
+  return date.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+---
+
+<MainLayout 
+  title="Beranda" 
+  description="Selamat datang di Cuandemy - Platform e-learning dan blog edukasi terpercaya untuk mengembangkan keterampilan dan pengetahuan Anda"
+>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-6xl font-bold text-secondary-900 mb-6">
+          Belajar Tanpa Batas di
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-800">
+            Cuandemy
+          </span>
+        </h1>
+        <p class="text-xl text-secondary-600 mb-8 max-w-3xl mx-auto">
+          Platform e-learning dan blog edukasi yang menyediakan konten berkualitas tinggi untuk membantu Anda mengembangkan keterampilan dan pengetahuan di era digital.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a 
+            href="/blog" 
+            class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
+          >
+            Mulai Membaca
+          </a>
+          <a 
+            href="/about" 
+            class="border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200"
+          >
+            Pelajari Lebih Lanjut
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-secondary-900 mb-4">
+          Mengapa Memilih Cuandemy?
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          Kami menyediakan pengalaman belajar yang komprehensif dan mudah diakses untuk semua kalangan.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="text-center p-6 rounded-xl bg-primary-50 hover:bg-primary-100 transition-colors duration-200">
+          <div class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-secondary-900 mb-2">Konten Berkualitas</h3>
+          <p class="text-secondary-600">
+            Artikel dan tutorial yang ditulis oleh para ahli di bidangnya dengan standar kualitas tinggi.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="text-center p-6 rounded-xl bg-secondary-50 hover:bg-secondary-100 transition-colors duration-200">
+          <div class="w-16 h-16 bg-secondary-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-secondary-900 mb-2">Akses Cepat</h3>
+          <p class="text-secondary-600">
+            Platform yang dioptimalkan untuk kecepatan dan kemudahan akses di berbagai perangkat.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="text-center p-6 rounded-xl bg-accent-50 hover:bg-accent-100 transition-colors duration-200">
+          <div class="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-secondary-900 mb-2">Komunitas</h3>
+          <p class="text-secondary-600">
+            Bergabung dengan komunitas pembelajar yang saling mendukung dan berbagi pengetahuan.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Articles Section -->
+  <section class="py-20 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-secondary-900 mb-4">
+          Artikel Terbaru
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          Temukan artikel-artikel terbaru dan terpopuler dari berbagai kategori pembelajaran.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {latestPosts.map((post) => (
+          <article class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+            <div class={`h-48 bg-gradient-to-br ${getCategoryGradient(post.data.category)} flex items-center justify-center`}>
+              <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={getCategoryIcon(post.data.category)}></path>
+              </svg>
+            </div>
+            <div class="p-6">
+              <div class="flex items-center mb-2">
+                <span class={`text-xs font-medium px-2.5 py-0.5 rounded ${getCategoryColor(post.data.category)}`}>
+                  {post.data.category}
+                </span>
+                <span class="text-secondary-500 text-sm ml-auto">{post.data.readTime}</span>
+              </div>
+              <h3 class="text-xl font-semibold text-secondary-900 mb-2">
+                {post.data.title}
+              </h3>
+              <p class="text-secondary-600 mb-4">
+                {post.data.description}
+              </p>
+              <a href={`/blog/${post.slug}`} class="text-primary-600 hover:text-primary-700 font-medium">
+                Baca Selengkapnya →
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="text-center mt-12">
+        <a 
+          href="/blog" 
+          class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
+        >
+          Lihat Semua Artikel
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-primary-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+        Siap Memulai Perjalanan Belajar Anda?
+      </h2>
+      <p class="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
+        Bergabunglah dengan ribuan pembelajar lainnya dan mulai kembangkan keterampilan Anda hari ini.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a 
+          href="/blog" 
+          class="bg-white text-primary-600 hover:bg-primary-50 px-8 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
+        >
+          Jelajahi Konten
+        </a>
+        <a 
+          href="/contact" 
+          class="border-2 border-white text-white hover:bg-white hover:text-primary-600 px-8 py-3 rounded-lg font-semibold transition-colors duration-200"
+        >
+          Hubungi Kami
+        </a>
+      </div>
+    </div>
+  </section>
+</MainLayout>

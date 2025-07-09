@@ -1,0 +1,213 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+
+// Get all blog posts and sort by date (newest first)
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Function to get category color
+function getCategoryColor(category: string) {
+  const colors = {
+    'Teknologi': 'bg-blue-100 text-blue-800',
+    'Programming': 'bg-green-100 text-green-800',
+    'Design': 'bg-gray-100 text-gray-800',
+    'Tutorial': 'bg-yellow-100 text-yellow-800'
+  };
+  return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+}
+
+// Function to get category icon
+function getCategoryIcon(category: string) {
+  const icons = {
+    'Teknologi': 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
+    'Programming': 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+    'Design': 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z',
+    'Tutorial': 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'
+  };
+  return icons[category as keyof typeof icons] || icons.Tutorial;
+}
+
+// Function to get gradient colors for category
+function getCategoryGradient(category: string) {
+  const gradients = {
+    'Teknologi': 'from-blue-400 to-blue-600',
+    'Programming': 'from-green-400 to-green-600',
+    'Design': 'from-slate-400 to-slate-600',
+    'Tutorial': 'from-yellow-400 to-orange-500'
+  };
+  return gradients[category as keyof typeof gradients] || 'from-gray-400 to-gray-600';
+}
+
+// Format date
+function formatDate(date: Date) {
+  return date.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+---
+
+<MainLayout 
+  title="Blog" 
+  description="Temukan artikel-artikel terbaru tentang teknologi, programming, design, dan tutorial dari Cuandemy"
+>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-secondary-900 mb-6">
+        Blog Cuandemy
+      </h1>
+      <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
+        Temukan artikel-artikel terbaru tentang teknologi, programming, design, dan tutorial yang akan membantu mengembangkan keterampilan Anda.
+      </p>
+    </div>
+  </section>
+
+  <!-- Blog Content -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Categories Filter -->
+      <div class="mb-12">
+        <div class="flex flex-wrap gap-4 justify-center">
+          <button class="category-filter active bg-primary-600 text-white px-6 py-2 rounded-full font-medium transition-colors duration-200" data-category="all">
+            Semua
+          </button>
+          <button class="category-filter bg-secondary-100 text-secondary-700 hover:bg-primary-100 hover:text-primary-700 px-6 py-2 rounded-full font-medium transition-colors duration-200" data-category="teknologi">
+            Teknologi
+          </button>
+          <button class="category-filter bg-secondary-100 text-secondary-700 hover:bg-primary-100 hover:text-primary-700 px-6 py-2 rounded-full font-medium transition-colors duration-200" data-category="programming">
+            Programming
+          </button>
+          <button class="category-filter bg-secondary-100 text-secondary-700 hover:bg-primary-100 hover:text-primary-700 px-6 py-2 rounded-full font-medium transition-colors duration-200" data-category="design">
+            Design
+          </button>
+          <button class="category-filter bg-secondary-100 text-secondary-700 hover:bg-primary-100 hover:text-primary-700 px-6 py-2 rounded-full font-medium transition-colors duration-200" data-category="tutorial">
+            Tutorial
+          </button>
+        </div>
+      </div>
+
+      <!-- Blog Posts Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="blog-posts">
+        {sortedPosts.map((post) => (
+          <article class={`blog-post bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden`} data-category={post.data.category.toLowerCase()}>
+            <div class={`h-48 bg-gradient-to-br ${getCategoryGradient(post.data.category)} flex items-center justify-center`}>
+              <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={getCategoryIcon(post.data.category)}></path>
+              </svg>
+            </div>
+            <div class="p-6">
+              <div class="flex items-center mb-3">
+                <span class={`text-xs font-medium px-2.5 py-0.5 rounded ${getCategoryColor(post.data.category)}`}>
+                  {post.data.category}
+                </span>
+                <span class="text-secondary-500 text-sm ml-auto">{formatDate(post.data.pubDate)}</span>
+              </div>
+              <h3 class="text-xl font-semibold text-secondary-900 mb-3">
+                {post.data.title}
+              </h3>
+              <p class="text-secondary-600 mb-4">
+                {post.data.description}
+              </p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center text-sm text-secondary-500">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  {post.data.readTime}
+                </div>
+                <a href={`/blog/${post.slug}`} class="text-primary-600 hover:text-primary-700 font-medium">
+                  Baca Selengkapnya →
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Load More Button (if needed for pagination) -->
+      {sortedPosts.length > 6 && (
+        <div class="text-center mt-12">
+          <button class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl">
+            Muat Lebih Banyak
+          </button>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="py-20 bg-secondary-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-secondary-900 mb-4">
+        Jangan Lewatkan Update Terbaru
+      </h2>
+      <p class="text-xl text-secondary-600 mb-8">
+        Berlangganan newsletter kami untuk mendapatkan artikel terbaru langsung di inbox Anda.
+      </p>
+      <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+        <input
+          type="email"
+          placeholder="Masukkan email Anda"
+          class="flex-1 px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+          required
+        />
+        <button
+          type="submit"
+          class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
+        >
+          Berlangganan
+        </button>
+      </form>
+    </div>
+  </section>
+</MainLayout>
+
+<script>
+  // Category filtering functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const categoryFilters = document.querySelectorAll('.category-filter') as NodeListOf<HTMLButtonElement>;
+    const blogPosts = document.querySelectorAll('.blog-post') as NodeListOf<HTMLElement>;
+
+    categoryFilters.forEach(filter => {
+      filter.addEventListener('click', function(e: Event) {
+        const target = e.currentTarget as HTMLButtonElement;
+        const category = target.getAttribute('data-category');
+        
+        // Update active filter
+        categoryFilters.forEach(f => {
+          f.classList.remove('active', 'bg-primary-600', 'text-white');
+          f.classList.add('bg-secondary-100', 'text-secondary-700');
+        });
+        
+        target.classList.add('active', 'bg-primary-600', 'text-white');
+        target.classList.remove('bg-secondary-100', 'text-secondary-700');
+        
+        // Filter posts
+        blogPosts.forEach(post => {
+          if (category === 'all' || post.getAttribute('data-category') === category) {
+            post.style.display = 'block';
+            post.style.animation = 'fadeIn 0.5s ease-in-out';
+          } else {
+            post.style.display = 'none';
+          }
+        });
+      });
+    });
+  });
+</script>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

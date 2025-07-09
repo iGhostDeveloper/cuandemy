@@ -1,0 +1,178 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+const { title, description, pubDate, author, category, tags, readTime } = Astro.props;
+
+// Format date
+function formatDate(date: Date) {
+  return date.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+}
+
+// Function to get category color
+function getCategoryColor(category: string) {
+  const colors = {
+    'Teknologi': 'bg-blue-100 text-blue-800',
+    'Programming': 'bg-green-100 text-green-800',
+    'Design': 'bg-gray-100 text-gray-800',
+    'Tutorial': 'bg-yellow-100 text-yellow-800'
+  };
+  return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+}
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Article Header -->
+    <header class="mb-12">
+      <div class="flex items-center space-x-2 text-sm text-secondary-600 mb-4">
+        <span class={`px-3 py-1 rounded-full font-medium ${getCategoryColor(category)}`}>{category}</span>
+        <span>•</span>
+        <time datetime={pubDate instanceof Date ? pubDate.toISOString() : new Date(pubDate).toISOString()}>{formatDate(pubDate instanceof Date ? pubDate : new Date(pubDate))}</time>
+        <span>•</span>
+        <span>{readTime} baca</span>
+      </div>
+      
+      <h1 class="text-4xl md:text-5xl font-bold text-secondary-900 mb-6 leading-tight">
+        {title}
+      </h1>
+      
+      <p class="text-xl text-secondary-600 leading-relaxed mb-8">
+        {description}
+      </p>
+      
+      <div class="flex items-center pt-8 border-t border-secondary-200">
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
+            <span class="text-primary-600 font-semibold text-lg">{author.charAt(0)}</span>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-secondary-900">{author}</p>
+          <p class="text-sm text-secondary-600">Penulis Artikel</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Article Content -->
+    <div class="prose prose-lg max-w-none prose-headings:text-secondary-900 prose-p:text-secondary-700 prose-a:text-primary-600 prose-strong:text-secondary-900 prose-code:text-primary-600 prose-code:bg-primary-50 prose-pre:bg-secondary-50 prose-pre:border prose-pre:border-secondary-200">
+      <slot />
+    </div>
+
+    <!-- Article Footer -->
+    <footer class="mt-12 pt-8 border-t border-secondary-200">
+      <div class="flex flex-wrap gap-2 mb-6">
+        <span class="text-sm text-secondary-600">Tags:</span>
+        {tags.map((tag: string) => (
+          <span class="bg-secondary-100 text-secondary-700 px-3 py-1 rounded-full text-sm">{tag}</span>
+        ))}
+      </div>
+      
+      <div class="bg-secondary-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-secondary-900 mb-2">Tentang Penulis</h3>
+        <p class="text-secondary-600">
+          {author} adalah kontributor aktif di Cuandemy yang berpengalaman di bidang {category.toLowerCase()}. 
+          Artikel ini ditulis berdasarkan pengalaman dan pengetahuan mendalam untuk membantu pembelajaran Anda.
+        </p>
+      </div>
+
+      <!-- Navigation -->
+      <div class="mt-8 flex justify-between items-center">
+        <a href="/blog" class="text-primary-600 hover:text-primary-700 font-medium flex items-center">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Kembali ke Blog
+        </a>
+        
+        <div class="flex space-x-4">
+          <button class="text-secondary-600 hover:text-primary-600 transition-colors" title="Share artikel">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .prose {
+    color: #374151;
+  }
+  
+  .prose h2 {
+    color: #1f2937;
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  
+  .prose h3 {
+    color: #1f2937;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .prose p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+  
+  .prose ul, .prose ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+  
+  .prose li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+  
+  .prose pre {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  
+  .prose code {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  .prose pre code {
+    background-color: transparent;
+    padding: 0;
+    color: #334155;
+  }
+  
+  .prose strong {
+    color: #1f2937;
+    font-weight: 600;
+  }
+
+  .prose blockquote {
+    border-left: 4px solid #3b82f6;
+    background-color: #eff6ff;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #1e40af;
+  }
+</style>
+</BaseLayout>
