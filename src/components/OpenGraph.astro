@@ -1,0 +1,172 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  url?: string;
+  type?: 'website' | 'article' | 'profile';
+  article?: {
+    author?: string;
+    publishedTime?: string;
+    modifiedTime?: string;
+    section?: string;
+    tags?: string[];
+  };
+  profile?: {
+    firstName?: string;
+    lastName?: string;
+    username?: string;
+  };
+  siteName?: string;
+  locale?: string;
+  alternateLocales?: string[];
+}
+
+const {
+  title,
+  description,
+  image = "/images/cuandemy-og-default.jpg",
+  url,
+  type = "website",
+  article,
+  profile,
+  siteName = "Cuandemy",
+  locale = "id_ID",
+  alternateLocales = ["en_US"]
+} = Astro.props;
+
+const siteUrl = "https://cuandemy.info";
+const fullUrl = url || new URL(Astro.url.pathname, siteUrl).href;
+const fullImageUrl = new URL(image, siteUrl).href;
+
+// Generate Twitter card type based on image
+const twitterCard = image.includes('large') || image.includes('banner') ? 'summary_large_image' : 'summary_large_image';
+---
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={fullUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={fullImageUrl} />
+<meta property="og:image:secure_url" content={fullImageUrl} />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={title} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content={locale} />
+
+{alternateLocales.map(altLocale => (
+  <meta property="og:locale:alternate" content={altLocale} />
+))}
+
+<!-- Article specific Open Graph tags -->
+{type === 'article' && article && (
+  <>
+    {article.author && <meta property="article:author" content={article.author} />}
+    {article.publishedTime && <meta property="article:published_time" content={article.publishedTime} />}
+    {article.modifiedTime && <meta property="article:modified_time" content={article.modifiedTime} />}
+    {article.section && <meta property="article:section" content={article.section} />}
+    {article.tags && article.tags.map(tag => (
+      <meta property="article:tag" content={tag} />
+    ))}
+  </>
+)}
+
+<!-- Profile specific Open Graph tags -->
+{type === 'profile' && profile && (
+  <>
+    {profile.firstName && <meta property="profile:first_name" content={profile.firstName} />}
+    {profile.lastName && <meta property="profile:last_name" content={profile.lastName} />}
+    {profile.username && <meta property="profile:username" content={profile.username} />}
+  </>
+)}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content={twitterCard} />
+<meta name="twitter:site" content="@cuandemy" />
+<meta name="twitter:creator" content="@cuandemy" />
+<meta name="twitter:url" content={fullUrl} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullImageUrl} />
+<meta name="twitter:image:alt" content={title} />
+
+<!-- Additional Twitter tags for large image -->
+{twitterCard === 'summary_large_image' && (
+  <>
+    <meta name="twitter:image:width" content="1200" />
+    <meta name="twitter:image:height" content="630" />
+  </>
+)}
+
+<!-- LinkedIn specific -->
+<meta property="linkedin:owner" content="cuandemy" />
+
+<!-- Pinterest -->
+<meta name="pinterest-rich-pin" content="true" />
+
+<!-- Additional meta tags for better social sharing -->
+<meta name="theme-color" content="#2563eb" />
+<meta name="msapplication-TileColor" content="#2563eb" />
+<meta name="msapplication-TileImage" content="/images/mstile-144x144.png" />
+
+<!-- Apple specific -->
+<meta name="apple-mobile-web-app-title" content="Cuandemy" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+<!-- WhatsApp and Telegram sharing optimization -->
+<meta property="og:video" content="" />
+<meta property="og:audio" content="" />
+
+<!-- Rich snippets for messaging apps -->
+<meta name="description" content={description} />
+<meta name="abstract" content={description} />
+<meta name="summary" content={description} />
+<meta name="Classification" content="Education, Technology, Programming" />
+<meta name="author" content={article?.author || "Cuandemy Team"} />
+<meta name="designer" content="Cuandemy Design Team" />
+<meta name="copyright" content="© 2024 Cuandemy. All rights reserved." />
+<meta name="reply-to" content="info@cuandemy.info" />
+<meta name="owner" content="Cuandemy" />
+<meta name="url" content={fullUrl} />
+<meta name="identifier-URL" content={fullUrl} />
+<meta name="directory" content="submission" />
+<meta name="category" content="Education, Technology, E-learning" />
+<meta name="coverage" content="Worldwide" />
+<meta name="distribution" content="Global" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="7 days" />
+<meta name="subtitle" content="Platform E-learning Terbaik" />
+<meta name="target" content="all" />
+<meta name="HandheldFriendly" content="True" />
+<meta name="MobileOptimized" content="320" />
+<meta name="audience" content="all" />
+<meta name="pagename" content={title} />
+<meta name="pagetopic" content={article?.section || "Education"} />
+<meta name="page-type" content={type} />
+<meta name="audience" content="Students, Developers, Designers, Technology Enthusiasts" />
+
+<!-- Geo tags for local SEO -->
+<meta name="geo.region" content="ID" />
+<meta name="geo.country" content="Indonesia" />
+<meta name="geo.placename" content="Jakarta" />
+<meta name="ICBM" content="-6.2088, 106.8456" />
+
+<!-- Dublin Core -->
+<meta name="DC.title" content={title} />
+<meta name="DC.description" content={description} />
+<meta name="DC.creator" content={article?.author || "Cuandemy"} />
+<meta name="DC.publisher" content="Cuandemy" />
+<meta name="DC.contributor" content="Cuandemy Team" />
+<meta name="DC.date" content={article?.publishedTime || new Date().toISOString()} />
+<meta name="DC.type" content="Text" />
+<meta name="DC.format" content="text/html" />
+<meta name="DC.identifier" content={fullUrl} />
+<meta name="DC.source" content="https://cuandemy.info" />
+<meta name="DC.language" content="id" />
+<meta name="DC.relation" content="https://cuandemy.info" />
+<meta name="DC.coverage" content="Indonesia" />
+<meta name="DC.rights" content="© 2024 Cuandemy. All rights reserved." />

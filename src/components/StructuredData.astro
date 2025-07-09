@@ -1,0 +1,249 @@
+---
+export interface Props {
+  type: 'website' | 'article' | 'course' | 'faq' | 'breadcrumb';
+  data: any;
+}
+
+const { type, data } = Astro.props;
+
+function generateWebsiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Cuandemy",
+    "description": "Platform e-learning terbaik untuk belajar teknologi modern",
+    "url": "https://cuandemy.info",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://cuandemy.info/search?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Cuandemy",
+      "url": "https://cuandemy.info",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://cuandemy.info/images/cuandemy-logo.png",
+        "width": 200,
+        "height": 60
+      },
+      "sameAs": [
+        "https://facebook.com/cuandemy",
+        "https://twitter.com/cuandemy",
+        "https://instagram.com/cuandemy",
+        "https://linkedin.com/company/cuandemy"
+      ]
+    }
+  };
+}
+
+function generateArticleSchema(articleData: any) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": articleData.title,
+    "description": articleData.description,
+    "image": {
+      "@type": "ImageObject",
+      "url": `https://cuandemy.info${articleData.image || '/images/blog-default.jpg'}`,
+      "width": 1200,
+      "height": 630
+    },
+    "author": {
+      "@type": "Person",
+      "name": articleData.author,
+      "url": `https://cuandemy.info/author/${articleData.author.toLowerCase().replace(/\s+/g, '-')}`
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Cuandemy",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://cuandemy.info/images/cuandemy-logo.png",
+        "width": 200,
+        "height": 60
+      }
+    },
+    "datePublished": articleData.publishedTime,
+    "dateModified": articleData.modifiedTime || articleData.publishedTime,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": articleData.url
+    },
+    "keywords": articleData.tags?.join(", ") || "",
+    "articleSection": articleData.category,
+    "wordCount": articleData.wordCount || (articleData.readTime ? parseInt(articleData.readTime.replace(/\D/g, '')) * 200 : undefined),
+    "timeRequired": articleData.readTime ? `PT${articleData.readTime.replace(/\D/g, '')}M` : undefined,
+    "inLanguage": "id-ID",
+    "isAccessibleForFree": true,
+    "hasPart": {
+      "@type": "WebPageElement",
+      "@id": `${articleData.url}#article-body`,
+      "isAccessibleForFree": true,
+      "cssSelector": ".prose"
+    }
+  };
+}
+
+function generateCourseSchema(courseData: any) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": courseData.title,
+    "description": courseData.description,
+    "provider": {
+      "@type": "Organization",
+      "name": "Cuandemy",
+      "url": "https://cuandemy.info"
+    },
+    "educationalLevel": courseData.level || "Beginner",
+    "courseCode": courseData.code,
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "online",
+      "instructor": {
+        "@type": "Person",
+        "name": courseData.instructor
+      }
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": courseData.price || "0",
+      "priceCurrency": "IDR",
+      "availability": "https://schema.org/InStock"
+    }
+  };
+}
+
+function generateFAQSchema(faqData: any) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqData.questions.map((item: any) => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  };
+}
+
+function generateBreadcrumbSchema(breadcrumbData: any) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbData.items.map((item: any, index: number) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": item.name,
+      "item": item.url
+    }))
+  };
+}
+
+function generateOrganizationSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Cuandemy",
+    "alternateName": "Cuandemy Indonesia",
+    "url": "https://cuandemy.info",
+    "logo": "https://cuandemy.info/images/cuandemy-logo.png",
+    "description": "Platform e-learning yang menyediakan kursus dan tutorial berkualitas tinggi dalam bidang teknologi, programming, dan design",
+    "foundingDate": "2024",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "ID",
+      "addressLocality": "Jakarta",
+      "addressRegion": "DKI Jakarta"
+    },
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "telephone": "+62-21-1234-5678",
+        "contactType": "customer service",
+        "availableLanguage": ["Indonesian", "English"],
+        "areaServed": "ID"
+      },
+      {
+        "@type": "ContactPoint",
+        "email": "info@cuandemy.info",
+        "contactType": "customer service"
+      }
+    ],
+    "sameAs": [
+      "https://facebook.com/cuandemy",
+      "https://twitter.com/cuandemy",
+      "https://instagram.com/cuandemy",
+      "https://linkedin.com/company/cuandemy",
+      "https://youtube.com/c/cuandemy"
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Cuandemy Courses",
+      "itemListElement": [
+        {
+          "@type": "OfferCatalog",
+          "name": "Programming Courses",
+          "itemListElement": [
+            {
+              "@type": "Course",
+              "name": "JavaScript Fundamentals",
+              "description": "Learn JavaScript from basics to advanced"
+            },
+            {
+              "@type": "Course", 
+              "name": "Python for Beginners",
+              "description": "Start your programming journey with Python"
+            }
+          ]
+        },
+        {
+          "@type": "OfferCatalog",
+          "name": "Design Courses",
+          "itemListElement": [
+            {
+              "@type": "Course",
+              "name": "UI/UX Design Principles",
+              "description": "Master the fundamentals of user interface and experience design"
+            }
+          ]
+        }
+      ]
+    }
+  };
+}
+
+let schema;
+switch (type) {
+  case 'website':
+    schema = generateWebsiteSchema();
+    break;
+  case 'article':
+    schema = generateArticleSchema(data);
+    break;
+  case 'course':
+    schema = generateCourseSchema(data);
+    break;
+  case 'faq':
+    schema = generateFAQSchema(data);
+    break;
+  case 'breadcrumb':
+    schema = generateBreadcrumbSchema(data);
+    break;
+  default:
+    schema = generateWebsiteSchema();
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+{type === 'website' && (
+  <script type="application/ld+json" set:html={JSON.stringify(generateOrganizationSchema())} />
+)}

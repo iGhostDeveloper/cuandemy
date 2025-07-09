@@ -1,0 +1,105 @@
+{
+  "name": "Cuandemy - Platform E-learning Terbaik",
+  "short_name": "Cuandemy",
+  "description": "Platform e-learning dan blog edukasi yang menyediakan konten berkualitas tinggi untuk membantu Anda mengembangkan keterampilan dan pengetahuan di era digital.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["education", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Blog Terbaru",
+      "short_name": "Blog",
+      "description": "Baca artikel dan tutorial terbaru",
+      "url": "/blog",
+      "icons": [
+        {
+          "src": "/icons/blog-shortcut.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Tentang Kami",
+      "short_name": "About",
+      "description": "Pelajari lebih lanjut tentang Cuandemy",
+      "url": "/about",
+      "icons": [
+        {
+          "src": "/icons/about-shortcut.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Kontak",
+      "short_name": "Contact",
+      "description": "Hubungi tim Cuandemy",
+      "url": "/contact",
+      "icons": [
+        {
+          "src": "/icons/contact-shortcut.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Homepage Cuandemy di Desktop"
+    },
+    {
+      "src": "/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Homepage Cuandemy di Mobile"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}

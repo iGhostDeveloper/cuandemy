@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://cuandemy.info/sitemap-index.xml
+Sitemap: https://cuandemy.info/sitemap-0.xml
+
+# Disallow admin areas (if any)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_astro/
+
+# Allow important pages
+Allow: /
+Allow: /blog/
+Allow: /about/
+Allow: /contact/

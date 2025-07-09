@@ -1,0 +1,211 @@
+---
+import OpenGraph from './OpenGraph.astro';
+import StructuredData from './StructuredData.astro';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: boolean;
+  author?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+  category?: string;
+  readTime?: string;
+  canonical?: string;
+  noindex?: boolean;
+  nofollow?: boolean;
+}
+
+const {
+  title = "Cuandemy - Platform E-learning Terbaik untuk Belajar Teknologi",
+  description = "Platform e-learning dan blog edukasi yang menyediakan konten berkualitas tinggi untuk membantu Anda mengembangkan keterampilan dan pengetahuan di era digital.",
+  image = "/images/cuandemy-og.jpg",
+  article = false,
+  author,
+  publishedTime,
+  modifiedTime,
+  tags = [],
+  category,
+  readTime,
+  canonical,
+  noindex = false,
+  nofollow = false
+} = Astro.props;
+
+const siteUrl = "https://cuandemy.info";
+const currentUrl = canonical || new URL(Astro.url.pathname, siteUrl).href;
+
+// Generate robots directive
+const robotsDirective = [
+  noindex ? 'noindex' : 'index',
+  nofollow ? 'nofollow' : 'follow'
+].join(', ');
+
+// Prepare structured data
+const structuredDataProps = article ? {
+  type: 'article' as const,
+  data: {
+    title,
+    description,
+    image,
+    author,
+    publishedTime,
+    modifiedTime,
+    tags,
+    category,
+    readTime,
+    url: currentUrl,
+    wordCount: readTime ? parseInt(readTime.replace(/\D/g, '')) * 200 : undefined
+  }
+} : {
+  type: 'website' as const,
+  data: {}
+};
+
+// Prepare Open Graph data
+const openGraphProps = {
+  title,
+  description,
+  image,
+  url: currentUrl,
+  type: article ? 'article' as const : 'website' as const,
+  ...(article && {
+    article: {
+      author,
+      publishedTime,
+      modifiedTime,
+      section: category,
+      tags
+    }
+  })
+};
+
+// Generate breadcrumb data
+const breadcrumbItems = [
+  { name: "Home", url: siteUrl }
+];
+
+if (article) {
+  breadcrumbItems.push(
+    { name: "Blog", url: `${siteUrl}/blog` },
+    { name: title, url: currentUrl }
+  );
+}
+---
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="keywords" content={tags.length > 0 ? tags.join(", ") : "e-learning, programming, teknologi, tutorial, blog edukasi, cuandemy"} />
+<meta name="author" content={author || "Cuandemy"} />
+<meta name="robots" content={robotsDirective} />
+<meta name="googlebot" content={robotsDirective} />
+<meta name="bingbot" content={robotsDirective} />
+<meta name="language" content="Indonesian" />
+<meta name="revisit-after" content="7 days" />
+<meta name="rating" content="general" />
+<meta name="distribution" content="global" />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={currentUrl} />
+
+<!-- Alternate language versions -->
+<link rel="alternate" hreflang="id" href={currentUrl} />
+<link rel="alternate" hreflang="x-default" href={currentUrl} />
+
+<!-- Open Graph Component -->
+<OpenGraph {...openGraphProps} />
+
+<!-- Structured Data Component -->
+<StructuredData {...structuredDataProps} />
+
+<!-- Breadcrumb Structured Data -->
+<StructuredData 
+  type="breadcrumb" 
+  data={{ items: breadcrumbItems }} 
+/>
+
+<!-- Additional Meta Tags for SEO -->
+<meta name="theme-color" content="#2563eb" />
+<meta name="msapplication-TileColor" content="#2563eb" />
+<meta name="application-name" content="Cuandemy" />
+<meta name="apple-mobile-web-app-title" content="Cuandemy" />
+
+<!-- Favicon and App Icons -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<!-- Preconnect to external domains for performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
+<!-- Additional SEO optimizations -->
+<meta name="format-detection" content="telephone=no" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+<!-- Security headers -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="X-Frame-Options" content="DENY" />
+<meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+
+<!-- Performance hints -->
+<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+
+<!-- Article specific meta tags -->
+{article && publishedTime && (
+  <>
+    <meta name="article:published_time" content={publishedTime} />
+    <meta name="article:modified_time" content={modifiedTime || publishedTime} />
+    <meta name="article:author" content={author} />
+    <meta name="article:section" content={category} />
+    <meta name="article:tag" content={tags.join(", ")} />
+    <meta name="news_keywords" content={tags.join(", ")} />
+  </>
+)}
+
+<!-- Rich snippets for better search appearance -->
+<meta name="thumbnail" content={new URL(image, siteUrl).href} />
+<meta name="subject" content={category || "Education"} />
+<meta name="copyright" content="© 2024 Cuandemy. All rights reserved." />
+<meta name="abstract" content={description} />
+<meta name="topic" content={category || "Technology Education"} />
+<meta name="summary" content={description} />
+<meta name="Classification" content="Education" />
+<meta name="designer" content="Cuandemy Design Team" />
+<meta name="reply-to" content="info@cuandemy.info" />
+<meta name="owner" content="Cuandemy" />
+<meta name="url" content={currentUrl} />
+<meta name="identifier-URL" content={currentUrl} />
+<meta name="directory" content="submission" />
+<meta name="pagename" content={title} />
+<meta name="category" content="Education, Technology, E-learning" />
+<meta name="coverage" content="Worldwide" />
+
+<!-- Geo tags for local SEO -->
+<meta name="geo.region" content="ID" />
+<meta name="geo.country" content="Indonesia" />
+<meta name="geo.placename" content="Jakarta" />
+<meta name="ICBM" content="-6.2088, 106.8456" />
+
+<!-- Dublin Core Metadata -->
+<meta name="DC.title" content={title} />
+<meta name="DC.description" content={description} />
+<meta name="DC.creator" content={author || "Cuandemy"} />
+<meta name="DC.publisher" content="Cuandemy" />
+<meta name="DC.date" content={publishedTime || new Date().toISOString()} />
+<meta name="DC.type" content="Text" />
+<meta name="DC.format" content="text/html" />
+<meta name="DC.identifier" content={currentUrl} />
+<meta name="DC.source" content="https://cuandemy.info" />
+<meta name="DC.language" content="id" />
+<meta name="DC.coverage" content="Indonesia" />
+<meta name="DC.rights" content="© 2024 Cuandemy. All rights reserved." />
